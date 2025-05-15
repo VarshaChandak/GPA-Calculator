@@ -278,3 +278,18 @@ label {
   color: #b3aaf9cc;
   user-select: none;
 }
+@media (max-width: 480px) {
+  main {
+    max-width: 100%;
+    padding: 2rem;
+  }
+  .course {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .course button.remove-btn {
+    grid-column: span 2;
+    width: 100%;
+    justify-self: stretch;
+  }
+}
