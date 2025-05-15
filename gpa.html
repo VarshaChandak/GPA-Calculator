@@ -236,3 +236,10 @@ calculateBtn.addEventListener("click", () => {
     resultDiv.textContent = `Your GPA is: ${gpa.toFixed(2)}`;
   }
 });
+const coursesDiv = document.getElementById("courses");
+const addCourseBtn = document.getElementById("add-course");
+const calculateBtn = document.getElementById("calculate");
+const resultDiv = document.getElementById("result");
+
+// Add initial course row
+addCourse();
