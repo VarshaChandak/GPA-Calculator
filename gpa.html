@@ -104,3 +104,86 @@ const gradePoints = {
   DD: 4,
   FF: 0,
 };
+function createCourseRow() {
+  const row = document.createElement("div");
+  row.className = "course";
+  row.style = `
+    display: grid;
+    grid-template-columns: 1.6fr 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.1rem 1.6rem;
+    background: #14162b;
+    border-radius: 12px;
+    box-shadow: inset 0 0 15px #222441;
+    color: #ddd;
+    transition: background-color 0.35s ease;
+  `;
+
+  const gradeContainer = document.createElement("div");
+  const gradeLabel = document.createElement("label");
+  const gradeId = `grade-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  gradeLabel.textContent = "Grade";
+  gradeLabel.setAttribute("for", gradeId);
+  const gradeInput = document.createElement("input");
+  gradeInput.type = "text";
+  gradeInput.placeholder = "AA, AB, BB...";
+  gradeInput.setAttribute("id", gradeId);
+  gradeInput.required = true;
+  gradeInput.autocomplete = "off";
+  gradeInput.spellcheck = false;
+  gradeContainer.appendChild(gradeLabel);
+  gradeContainer.appendChild(gradeInput);
+
+  const creditContainer = document.createElement("div");
+  const creditLabel = document.createElement("label");
+  const creditId = `credit-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  creditLabel.textContent = "Credits";
+  creditLabel.setAttribute("for", creditId);
+  const creditInput = document.createElement("input");
+  creditInput.type = "number";
+  creditInput.placeholder = "3";
+  creditInput.min = "0.5";
+  creditInput.step = "0.5";
+  creditInput.required = true;
+  creditInput.setAttribute("id", creditId);
+  creditContainer.appendChild(creditLabel);
+  creditContainer.appendChild(creditInput);
+
+  const removeBtn = document.createElement("button");
+  removeBtn.className = "remove-btn";
+  removeBtn.type = "button";
+  removeBtn.textContent = "Remove";
+  removeBtn.style = `
+    background: transparent;
+    border: 2px solid #b192e4;
+    color: #b192e4;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    justify-self: center;
+    align-self: center;
+    width: 80px;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  `;
+  removeBtn.onclick = () => {
+    row.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.9)' }], {
+      duration: 200,
+      easing: "ease-in-out",
+    }).onfinish = () => {
+      row.remove();
+      if (coursesDiv.children.length === 0) {
+        resultDiv.textContent = '';
+      }
+    };
+  };
+
+  row.appendChild(gradeContainer);
+  row.appendChild(creditContainer);
+  row.appendChild(removeBtn);
+
+  return row;
+}
