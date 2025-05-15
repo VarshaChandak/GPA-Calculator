@@ -196,3 +196,43 @@ function addCourse() {
   });
 }
 addCourseBtn.addEventListener("click", addCourse);
+calculateBtn.addEventListener("click", () => {
+  const rows = coursesDiv.children;
+  if (rows.length === 0) {
+    resultDiv.textContent = "Please add at least one course.";
+    return;
+  }
+
+  let totalPoints = 0;
+  let totalCredits = 0;
+  let error = false;
+
+  for (const row of rows) {
+    const gradeInput = row.querySelector("input[type=text]");
+    const creditInput = row.querySelector("input[type=number]");
+    const grade = gradeInput.value.toUpperCase().trim();
+    const credits = parseFloat(creditInput.value);
+
+    if (!gradePoints.hasOwnProperty(grade)) {
+      error = true;
+      gradeInput.style.borderColor = "#f25f5c";
+      resultDiv.textContent = `Invalid grade: "${grade}". Use AA, AB, BB, BC, CC, CD, DD, or FF.`;
+      break;
+    } else if (isNaN(credits) || credits <= 0) {
+      error = true;
+      creditInput.style.borderColor = "#f25f5c";
+      resultDiv.textContent = "Please enter a valid positive credit value.";
+      break;
+    } else {
+      gradeInput.style.borderColor = "#aa8de1";
+      creditInput.style.borderColor = "#aa8de1";
+      totalPoints += gradePoints[grade] * credits;
+      totalCredits += credits;
+    }
+  }
+
+  if (!error) {
+    const gpa = totalPoints / totalCredits;
+    resultDiv.textContent = `Your GPA is: ${gpa.toFixed(2)}`;
+  }
+});
