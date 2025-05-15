@@ -243,3 +243,30 @@ const resultDiv = document.getElementById("result");
 
 // Add initial course row
 addCourse();
+button:hover {
+  background-color: #a388f2 !important;
+  box-shadow: 0 14px 35px #7e61e1aa !important;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 15px #7e61e1cc;
+}
+
+input[type="text"], input[type="number"] {
+  background: #1b1c2d;
+  border: 1.5px solid #6e5bb3;
+  border-radius: 10px;
+  padding: 0.7rem 1.2rem;
+  color: #ddd;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+  outline: none;
+  border-color: #a388f2;
+  box-shadow: 0 0 10px #a388f2bb;
+}
