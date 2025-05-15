@@ -30,5 +30,8 @@ A sleek, dark-themed GPA calculator web app with smooth animations and a clean U
    git clone https://github.com/VarshaChandak/GPA-Calculator
 
 Screenshot of project
+
+
+
 ![image](https://github.com/user-attachments/assets/2ba25f64-5e33-4956-a7ad-fc9552393723)
 
