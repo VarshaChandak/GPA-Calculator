@@ -6,9 +6,13 @@
   <title>GPA Calculator — Deep Dark Theme</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #070911;
+      background: #070911; /* Almost pure black with navy tint */
       font-family: 'Montserrat', sans-serif;
       color: #ccc;
       display: flex;
@@ -19,281 +23,310 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-  </style>
-</head>
-<body>
-</body>
-</html>
-<body>
-  <main id="app" role="main" aria-label="GPA Calculator" style="
-    background: #0d0f1a; 
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(50, 35, 75, 0.85);
-    max-width: 460px;
-    width: 100%;
-    padding: 3rem 3.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2.3rem;
-    user-select: none;
-    border: 1.5px solid #1b1c2d;
-  ">
-    <h1 style="
+
+    #app {
+      background: #0d0f1a; /* Very dark navy/black */
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(50, 35, 75, 0.85);
+      max-width: 460px;
+      width: 100%;
+      padding: 3rem 3.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.3rem;
+      user-select: none;
+      border: 1.5px solid #1b1c2d;
+    }
+
+    h1 {
       margin: 0;
       font-weight: 600;
       font-size: 2.8rem;
       text-align: center;
-      color: #9f7ae0;
+      color: #9f7ae0; /* soft purple */
       letter-spacing: 1.3px;
       text-shadow: 0 0 6px #7151a1aa;
-    ">GPA Calculator</h1>
-  </main>
-</body>
-<section id="courses" aria-live="polite" style="display:flex;flex-direction:column;gap:1.7rem;"></section>
-<button id="add-course" aria-label="Add new course" style="
-  background: #7e61e1;
-  color: #ede9ff;
-  border: none;
-  border-radius: 14px;
-  padding: 1rem 0;
-  font-weight: 600;
-  font-size: 1.25rem;
-  cursor: pointer;
-  box-shadow: 0 10px 25px #5c3ddaaa;
-  transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
-  user-select: none;
-  width: 100%;
-  letter-spacing: 0.06em;
-  margin-top: 0.5rem;
-">+ Add Course</button>
-
-<button id="calculate" aria-label="Calculate GPA" style="
-  background: #7e61e1;
-  color: #ede9ff;
-  border: none;
-  border-radius: 14px;
-  padding: 1rem 0;
-  font-weight: 600;
-  font-size: 1.25rem;
-  cursor: pointer;
-  box-shadow: 0 10px 25px #5c3ddaaa;
-  transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
-  user-select: none;
-  width: 100%;
-  letter-spacing: 0.06em;
-  margin-top: 0.2rem;
-">Calculate GPA</button>
-<div id="result" aria-live="assertive" style="
-  margin-top: 1rem;
-  font-weight: 700;
-  font-size: 1.95rem;
-  color: #b1a2f5;
-  text-align: center;
-  min-height: 2.5rem;
-  user-select: none;
-  font-family: 'Montserrat', sans-serif;
-  text-shadow: 0 0 10px #7869e6bb;
-"></div>
-const gradePoints = {
-  AA: 10,
-  AB: 9,
-  BB: 8,
-  BC: 7,
-  CC: 6,
-  CD: 5,
-  DD: 4,
-  FF: 0,
-};
-function createCourseRow() {
-  const row = document.createElement("div");
-  row.className = "course";
-  row.style = `
-    display: grid;
-    grid-template-columns: 1.6fr 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.1rem 1.6rem;
-    background: #14162b;
-    border-radius: 12px;
-    box-shadow: inset 0 0 15px #222441;
-    color: #ddd;
-    transition: background-color 0.35s ease;
-  `;
-
-  const gradeContainer = document.createElement("div");
-  const gradeLabel = document.createElement("label");
-  const gradeId = `grade-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  gradeLabel.textContent = "Grade";
-  gradeLabel.setAttribute("for", gradeId);
-  const gradeInput = document.createElement("input");
-  gradeInput.type = "text";
-  gradeInput.placeholder = "AA, AB, BB...";
-  gradeInput.setAttribute("id", gradeId);
-  gradeInput.required = true;
-  gradeInput.autocomplete = "off";
-  gradeInput.spellcheck = false;
-  gradeContainer.appendChild(gradeLabel);
-  gradeContainer.appendChild(gradeInput);
-
-  const creditContainer = document.createElement("div");
-  const creditLabel = document.createElement("label");
-  const creditId = `credit-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  creditLabel.textContent = "Credits";
-  creditLabel.setAttribute("for", creditId);
-  const creditInput = document.createElement("input");
-  creditInput.type = "number";
-  creditInput.placeholder = "3";
-  creditInput.min = "0.5";
-  creditInput.step = "0.5";
-  creditInput.required = true;
-  creditInput.setAttribute("id", creditId);
-  creditContainer.appendChild(creditLabel);
-  creditContainer.appendChild(creditInput);
-
-  const removeBtn = document.createElement("button");
-  removeBtn.className = "remove-btn";
-  removeBtn.type = "button";
-  removeBtn.textContent = "Remove";
-  removeBtn.style = `
-    background: transparent;
-    border: 2px solid #b192e4;
-    color: #b192e4;
-    font-weight: 600;
-    padding: 0.35rem 0.85rem;
-    font-size: 0.95rem;
-    border-radius: 12px;
-    cursor: pointer;
-    user-select: none;
-    justify-self: center;
-    align-self: center;
-    width: 80px;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  `;
-  removeBtn.onclick = () => {
-    row.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.9)' }], {
-      duration: 200,
-      easing: "ease-in-out",
-    }).onfinish = () => {
-      row.remove();
-      if (coursesDiv.children.length === 0) {
-        resultDiv.textContent = '';
-      }
-    };
-  };
-
-  row.appendChild(gradeContainer);
-  row.appendChild(creditContainer);
-  row.appendChild(removeBtn);
-
-  return row;
-}
-function addCourse() {
-  const course = createCourseRow();
-  coursesDiv.appendChild(course);
-  course.animate([{ opacity: 0, transform: 'scale(0.9)' }, { opacity: 1, transform: 'scale(1)' }], {
-    duration: 300,
-    easing: "ease-out",
-  });
-}
-addCourseBtn.addEventListener("click", addCourse);
-calculateBtn.addEventListener("click", () => {
-  const rows = coursesDiv.children;
-  if (rows.length === 0) {
-    resultDiv.textContent = "Please add at least one course.";
-    return;
-  }
-
-  let totalPoints = 0;
-  let totalCredits = 0;
-  let error = false;
-
-  for (const row of rows) {
-    const gradeInput = row.querySelector("input[type=text]");
-    const creditInput = row.querySelector("input[type=number]");
-    const grade = gradeInput.value.toUpperCase().trim();
-    const credits = parseFloat(creditInput.value);
-
-    if (!gradePoints.hasOwnProperty(grade)) {
-      error = true;
-      gradeInput.style.borderColor = "#f25f5c";
-      resultDiv.textContent = `Invalid grade: "${grade}". Use AA, AB, BB, BC, CC, CD, DD, or FF.`;
-      break;
-    } else if (isNaN(credits) || credits <= 0) {
-      error = true;
-      creditInput.style.borderColor = "#f25f5c";
-      resultDiv.textContent = "Please enter a valid positive credit value.";
-      break;
-    } else {
-      gradeInput.style.borderColor = "#aa8de1";
-      creditInput.style.borderColor = "#aa8de1";
-      totalPoints += gradePoints[grade] * credits;
-      totalCredits += credits;
     }
-  }
 
-  if (!error) {
-    const gpa = totalPoints / totalCredits;
-    resultDiv.textContent = `Your GPA is: ${gpa.toFixed(2)}`;
-  }
-});
-const coursesDiv = document.getElementById("courses");
-const addCourseBtn = document.getElementById("add-course");
-const calculateBtn = document.getElementById("calculate");
-const resultDiv = document.getElementById("result");
+    #courses {
+      display: flex;
+      flex-direction: column;
+      gap: 1.7rem;
+    }
 
-// Add initial course row
-addCourse();
-button:hover {
-  background-color: #a388f2 !important;
-  box-shadow: 0 14px 35px #7e61e1aa !important;
-  transform: translateY(-2px);
-}
+    .course {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1.1rem 1.6rem;
+      background: #14162b; /* dark slate */
+      border-radius: 12px;
+      box-shadow: inset 0 0 15px #222441;
+      color: #ddd;
+      transition: background-color 0.35s ease;
+    }
 
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 15px #7e61e1cc;
-}
+    .course:hover {
+      background: #1f1f3c;
+    }
 
-input[type="text"], input[type="number"] {
-  background: #1b1c2d;
-  border: 1.5px solid #6e5bb3;
-  border-radius: 10px;
-  padding: 0.7rem 1.2rem;
-  color: #ddd;
-  font-weight: 600;
-  font-size: 1.05rem;
-  transition: border-color 0.3s ease;
-}
+    label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      display: block;
+      color: #a89eda;
+      user-select: none;
+    }
 
-input[type="text"]:focus, input[type="number"]:focus {
-  outline: none;
-  border-color: #a388f2;
-  box-shadow: 0 0 10px #a388f2bb;
-}
-label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 700;
-  margin-bottom: 0.28rem;
-  color: #b3aaf9cc;
-  user-select: none;
-}
-@media (max-width: 480px) {
-  main {
-    max-width: 100%;
-    padding: 2rem;
-  }
-  .course {
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  .course button.remove-btn {
-    grid-column: span 2;
-    width: 100%;
-    justify-self: stretch;
-  }
-}
-button:focus-visible, input:focus-visible {
-  outline: 3px solid #7e61e1;
-  outline-offset: 3px;
-}
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 1.9px solid #3c3f61;
+      background: #181a2e;
+      color: #eee;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #646684;
+      font-style: italic;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #aa8de1;
+      background: #2c2e4a;
+      box-shadow: 0 0 10px #aa8de1bb;
+      color: #fff;
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: 2px solid #b192e4;
+      color: #b192e4;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      justify-self: center;
+      align-self: center;
+      width: 80px;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .remove-btn:hover {
+      background: #b192e4;
+      color: #121324;
+      box-shadow: 0 0 14px #b192e4cc;
+    }
+
+    #add-course,
+    #calculate {
+      background: #7e61e1; /* muted purple */
+      color: #ede9ff;
+      border: none;
+      border-radius: 14px;
+      padding: 1rem 0;
+      font-weight: 600;
+      font-size: 1.25rem;
+      cursor: pointer;
+      box-shadow: 0 10px 25px #5c3ddaaa;
+      transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+      user-select: none;
+      width: 100%;
+      letter-spacing: 0.06em;
+    }
+
+    #add-course:hover,
+    #calculate:hover {
+      background: #a388f2;
+      box-shadow: 0 14px 32px #8566e3cc;
+      transform: scale(1.05);
+    }
+
+    #add-course:active,
+    #calculate:active {
+      transform: scale(0.97);
+    }
+
+    #result {
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1.95rem;
+      color: #b1a2f5;
+      text-align: center;
+      min-height: 2.5rem;
+      user-select: none;
+      font-family: 'Montserrat', sans-serif;
+      text-shadow: 0 0 10px #7869e6bb;
+    }
+
+    @media (max-width: 540px) {
+      #app {
+        padding: 2rem 2.4rem;
+      }
+      .course {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 0.8rem;
+      }
+      .remove-btn {
+        grid-column: 2 / 3;
+        justify-self: end;
+        align-self: center;
+        width: 75px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="app" role="main" aria-label="GPA Calculator">
+    <h1>GPA Calculator</h1>
+
+    <section id="courses" aria-live="polite"></section>
+
+    <button id="add-course" aria-label="Add new course">+ Add Course</button>
+    <button id="calculate" aria-label="Calculate GPA">Calculate GPA</button>
+
+    <div id="result" aria-live="assertive"></div>
+  </main>
+
+  <script>
+    const coursesDiv = document.getElementById("courses");
+    const addCourseBtn = document.getElementById("add-course");
+    const calculateBtn = document.getElementById("calculate");
+    const resultDiv = document.getElementById("result");
+
+    const gradePoints = {
+      AA: 10,
+      AB: 9,
+      BB: 8,
+      BC: 7,
+      CC: 6,
+      CD: 5,
+      DD: 4,
+      FF: 0,
+    };
+
+    function createCourseRow() {
+      const row = document.createElement("div");
+      row.className = "course";
+
+      const gradeContainer = document.createElement("div");
+      const gradeLabel = document.createElement("label");
+      const gradeId = `grade-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      gradeLabel.textContent = "Grade";
+      gradeLabel.setAttribute("for", gradeId);
+      const gradeInput = document.createElement("input");
+      gradeInput.type = "text";
+      gradeInput.placeholder = "AA, AB, BB...";
+      gradeInput.setAttribute("id", gradeId);
+      gradeInput.required = true;
+      gradeInput.autocomplete = "off";
+      gradeInput.spellcheck = false;
+      gradeContainer.appendChild(gradeLabel);
+      gradeContainer.appendChild(gradeInput);
+
+      const creditContainer = document.createElement("div");
+      const creditLabel = document.createElement("label");
+      const creditId = `credit-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      creditLabel.textContent = "Credits";
+      creditLabel.setAttribute("for", creditId);
+      const creditInput = document.createElement("input");
+      creditInput.type = "number";
+      creditInput.placeholder = "3";
+      creditInput.min = "0.5";
+      creditInput.step = "0.5";
+      creditInput.required = true;
+      creditInput.setAttribute("id", creditId);
+      creditContainer.appendChild(creditLabel);
+      creditContainer.appendChild(creditInput);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-btn";
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.setAttribute("aria-label", "Remove this course");
+      removeBtn.onclick = () => {
+        row.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.9)' }], {
+          duration: 200,
+          easing: "ease-in-out",
+        }).onfinish = () => {
+          row.remove();
+          if (coursesDiv.children.length === 0) {
+            resultDiv.textContent = '';
+          }
+        };
+      };
+
+      row.appendChild(gradeContainer);
+      row.appendChild(creditContainer);
+      row.appendChild(removeBtn);
+
+      return row;
+    }
+
+    function addCourse() {
+      const course = createCourseRow();
+      coursesDiv.appendChild(course);
+      course.animate([{ opacity: 0, transform: 'scale(0.9)' }, { opacity: 1, transform: 'scale(1)' }], {
+        duration: 300,
+        easing: "ease-out",
+      });
+    }
+
+    addCourseBtn.addEventListener("click", addCourse);
+
+    calculateBtn.addEventListener("click", () => {
+      const rows = coursesDiv.children;
+      if (rows.length === 0) {
+        resultDiv.textContent = "Please add at least one course.";
+        return;
+      }
+
+      let totalPoints = 0;
+      let totalCredits = 0;
+      let error = false;
+
+      for (const row of rows) {
+        const gradeInput = row.querySelector("input[type=text]");
+        const creditInput = row.querySelector("input[type=number]");
+        const grade = gradeInput.value.toUpperCase().trim();
+        const credits = parseFloat(creditInput.value);
+
+        if (!gradePoints.hasOwnProperty(grade)) {
+          error = true;
+          gradeInput.style.borderColor = "#f25f5c"; // red highlight
+          resultDiv.textContent = `Invalid grade: "${grade}". Use AA, AB, BB, BC, CC, CD, DD, or FF.`;
+          break;
+        } else if (isNaN(credits) || credits <= 0) {
+          error = true;
+          creditInput.style.borderColor = "#f25f5c"; // red highlight
+          resultDiv.textContent = "Please enter a valid positive credit value.";
+          break;
+        } else {
+          gradeInput.style.borderColor = "#aa8de1"; // reset highlight
+          creditInput.style.borderColor = "#aa8de1";
+          totalPoints += gradePoints[grade] * credits;
+          totalCredits += credits;
+        }
+      }
+
+      if (!error) {
+        const gpa = totalPoints / totalCredits;
+        resultDiv.textContent = `Your GPA is: ${gpa.toFixed(2)}`;
+      }
+    });
+
+    // Add initial course row on load
+    addCourse();
+  </script>
+</body>
+</html>
